@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
         ReturnValues: "ALL_OLD",
       })
       .promise();
-    return send(200, { payload: todoDeleted });
+    return send(200, { payload: todoDeleted.Attributes });
   } catch (e) {
     const err = e as AWSError;
     return send(500, { message: "Failed to connect", error: err.toString() });

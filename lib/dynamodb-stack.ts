@@ -1,10 +1,14 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 
+type DynamodbStackProps = cdk.StackProps & {
+  kinesisTodos: cdk.aws_kinesis.Stream;
+};
+
 export class DynamodbStack extends cdk.Stack {
   tableTodos: cdk.aws_dynamodb.Table;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: DynamodbStackProps) {
     super(scope, id, props);
 
     const tableTodos = new cdk.aws_dynamodb.Table(this, "TableTodos", {
@@ -12,6 +16,8 @@ export class DynamodbStack extends cdk.Stack {
         name: "pk",
         type: cdk.aws_dynamodb.AttributeType.STRING,
       },
+      stream: cdk.aws_dynamodb.StreamViewType.NEW_IMAGE,
+      kinesisStream: props.kinesisTodos,
     });
 
     this.tableTodos = tableTodos;

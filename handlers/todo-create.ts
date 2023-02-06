@@ -18,23 +18,22 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     throw new Error("tableName not specified in process.env.TABLE_TODOS");
   }
 
-  const body = JSON.parse(event.body || "{}");
-
-  const putParams = {
-    TableName: tableName,
-    Item: {
-      pk: randomUUID(),
-      email: body.email,
-      message: body.message,
-    },
-  };
-
   try {
-    await ddb.put(putParams).promise();
+    const body = JSON.parse(event.body || "{}");
+    const todoCreated = {
+      message: body.message,
+      email: body.email,
+      pk: randomUUID(),
+    };
+    await ddb
+      .put({
+        TableName: tableName,
+        Item: todoCreated,
+      })
+      .promise();
+    return send(200, { payload: todoCreated });
   } catch (e) {
     const err = e as AWSError;
     return send(500, { message: "Failed to connect", error: err.toString() });
   }
-
-  return send(200, { payload: putParams.Item });
 };

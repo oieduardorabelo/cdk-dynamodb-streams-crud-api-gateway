@@ -1,59 +1,17 @@
-import * as path from "node:path";
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 
+type RestApiStackProps = cdk.StackProps & {
+  tableTodos: cdk.aws_dynamodb.Table;
+  todoCreate: cdk.aws_lambda_nodejs.NodejsFunction;
+  todoRead: cdk.aws_lambda_nodejs.NodejsFunction;
+  todoUpdate: cdk.aws_lambda_nodejs.NodejsFunction;
+  todoDelete: cdk.aws_lambda_nodejs.NodejsFunction;
+};
+
 export class RestApiStack extends cdk.Stack {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: cdk.StackProps & { tableTodos: cdk.aws_dynamodb.Table }
-  ) {
+  constructor(scope: Construct, id: string, props: RestApiStackProps) {
     super(scope, id, props);
-
-    // ====================================================
-    //
-    // AWS Lambda Node.js functions handlers
-    //
-    // ====================================================
-    function sharedLambdaProps(
-      entryName: string
-    ): cdk.aws_lambda_nodejs.NodejsFunctionProps {
-      return {
-        runtime: cdk.aws_lambda.Runtime.NODEJS_18_X,
-        entry: getPathHandlers(entryName),
-        environment: {
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-          TABLE_TODOS: props.tableTodos.tableName,
-        },
-      };
-    }
-    const todoCreate = new cdk.aws_lambda_nodejs.NodejsFunction(
-      this,
-      "todoCreate",
-      sharedLambdaProps("todo-create.ts")
-    );
-    props.tableTodos.grantWriteData(todoCreate);
-
-    const todoRead = new cdk.aws_lambda_nodejs.NodejsFunction(
-      this,
-      "todoRead",
-      sharedLambdaProps("todo-read.ts")
-    );
-    props.tableTodos.grantReadData(todoRead);
-
-    const todoUpdate = new cdk.aws_lambda_nodejs.NodejsFunction(
-      this,
-      "todoUpdate",
-      sharedLambdaProps("todo-update.ts")
-    );
-    props.tableTodos.grantWriteData(todoUpdate);
-
-    const todoDelete = new cdk.aws_lambda_nodejs.NodejsFunction(
-      this,
-      "todoDelete",
-      sharedLambdaProps("todo-delete.ts")
-    );
-    props.tableTodos.grantWriteData(todoDelete);
 
     // ====================================================
     //
@@ -73,26 +31,22 @@ export class RestApiStack extends cdk.Stack {
 
     restApiTodo.addMethod(
       "POST",
-      new cdk.aws_apigateway.LambdaIntegration(todoCreate)
+      new cdk.aws_apigateway.LambdaIntegration(props.todoCreate)
     );
 
     const restApiTodoId = restApiTodo.addResource("{id}");
 
     restApiTodoId.addMethod(
       "GET",
-      new cdk.aws_apigateway.LambdaIntegration(todoRead)
+      new cdk.aws_apigateway.LambdaIntegration(props.todoRead)
     );
     restApiTodoId.addMethod(
       "PATCH",
-      new cdk.aws_apigateway.LambdaIntegration(todoUpdate)
+      new cdk.aws_apigateway.LambdaIntegration(props.todoUpdate)
     );
     restApiTodoId.addMethod(
       "DELETE",
-      new cdk.aws_apigateway.LambdaIntegration(todoDelete)
+      new cdk.aws_apigateway.LambdaIntegration(props.todoDelete)
     );
   }
-}
-
-function getPathHandlers(filename: string) {
-  return path.join(__dirname, "..", "handlers", filename);
 }

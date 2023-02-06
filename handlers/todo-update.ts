@@ -33,7 +33,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
         ReturnValues: "ALL_NEW",
       })
       .promise();
-    return send(200, { payload: todoUpdated });
+    return send(200, { payload: todoUpdated.Attributes });
   } catch (e) {
     const err = e as AWSError;
     return send(500, { message: "Failed to connect", error: err.toString() });
