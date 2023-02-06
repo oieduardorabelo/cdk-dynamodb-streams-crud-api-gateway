@@ -18,6 +18,7 @@ export class DynamodbStack extends cdk.Stack {
       },
       stream: cdk.aws_dynamodb.StreamViewType.NEW_IMAGE,
       kinesisStream: props.kinesisTodos,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     this.tableTodos = tableTodos;
