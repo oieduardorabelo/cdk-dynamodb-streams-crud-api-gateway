@@ -11,6 +11,10 @@ export class DynamodbStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DynamodbStackProps) {
     super(scope, id, props);
 
+    //
+    // Change data capture for DynamoDB Streams
+    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html
+    //
     const tableTodos = new cdk.aws_dynamodb.Table(this, "TableTodos", {
       partitionKey: {
         name: "pk",

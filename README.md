@@ -1,14 +1,17 @@
-# Welcome to your CDK TypeScript project
+# DynamoDB Streams to capture data change in Amazon DynamoDB by CRUD with REST API in Amazon API Gateway
 
-This is a blank project for CDK development with TypeScript.
+CDK example of:
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+- Using CDK multiple stacks to build a simple CRUD application
+- REST API in Amazon API Gateway to create, read, update and delete data in Amazon DynamoDB
+- Amazon DynamoDB Streams to capture data change in Amazon DynamoDB
 
-## Useful commands
+Final architecture:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+![](./docs//final-architecture.png)
+
+Extra resources:
+
+- [Change data capture for DynamoDB Streams](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html)
+- [Deliver DynamoDB records to Amazon S3 using Kinesis Data Streams and Kinesis Data Firehose with AWS CDK](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deliver-dynamodb-records-to-amazon-s3-using-kinesis-data-streams-and-kinesis-data-firehose-with-aws-cdk.html)
+- [How to Stream Data from Amazon DynamoDB to Amazon Aurora using AWS Lambda and Amazon Kinesis Firehose](https://aws.amazon.com/blogs/database/how-to-stream-data-from-amazon-dynamodb-to-amazon-aurora-using-aws-lambda-and-amazon-kinesis-firehose/)
